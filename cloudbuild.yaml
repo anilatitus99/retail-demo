@@ -6,48 +6,48 @@ availableSecrets:
       env: 'FIREBASE_TOKEN'
 
 steps:
-# 1. Build and push product backend
-- name: 'gcr.io/cloud-builders/docker'
-  args: ['build', '--platform=linux/amd64', '-t', 'us-central1-docker.pkg.dev/retail-1234/retail-repo/products:$COMMIT_SHA', './product']
-- name: 'gcr.io/cloud-builders/docker'
-  args: ['push', 'us-central1-docker.pkg.dev/retail-1234/retail-repo/products:$COMMIT_SHA']
+  # 1. Build and push product backend
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '--platform=linux/amd64', '-t', 'us-central1-docker.pkg.dev/retail-1234/retail-repo/products:$COMMIT_SHA', './product']
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'us-central1-docker.pkg.dev/retail-1234/retail-repo/products:$COMMIT_SHA']
 
-# 2. Build and push inventory backend
-- name: 'gcr.io/cloud-builders/docker'
-  args: ['build', '--platform=linux/amd64', '-t', 'us-central1-docker.pkg.dev/retail-1234/retail-repo/inventory:$COMMIT_SHA', './inventory']
-- name: 'gcr.io/cloud-builders/docker'
-  args: ['push', 'us-central1-docker.pkg.dev/retail-1234/retail-repo/inventory:$COMMIT_SHA']
+  # 2. Build and push inventory backend
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '--platform=linux/amd64', '-t', 'us-central1-docker.pkg.dev/retail-1234/retail-repo/inventory:$COMMIT_SHA', './inventory']
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'us-central1-docker.pkg.dev/retail-1234/retail-repo/inventory:$COMMIT_SHA']
 
-# 3. Build and push orders backend
-- name: 'gcr.io/cloud-builders/docker'
-  args: ['build', '--platform=linux/amd64', '-t', 'us-central1-docker.pkg.dev/retail-1234/retail-repo/orders:$COMMIT_SHA', './orders']
-- name: 'gcr.io/cloud-builders/docker'
-  args: ['push', 'us-central1-docker.pkg.dev/retail-1234/retail-repo/orders:$COMMIT_SHA']
+  # 3. Build and push orders backend
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '--platform=linux/amd64', '-t', 'us-central1-docker.pkg.dev/retail-1234/retail-repo/orders:$COMMIT_SHA', './orders']
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'us-central1-docker.pkg.dev/retail-1234/retail-repo/orders:$COMMIT_SHA']
 
-# 4. Terraform Init & Apply (deploy Cloud Run & infrastructure)
-- name: 'hashicorp/terraform:1.6.6'
-  entrypoint: 'sh'
-  args:
-  - '-c'
-  - |
-    cd terraform
-    terraform init
-    terraform apply -auto-approve -var="project_id=retail-1234" -var="image_tag=$COMMIT_SHA"
+  # 4. Terraform Init & Apply (deploy Cloud Run & infrastructure)
+  - name: 'hashicorp/terraform:1.6.6'
+    entrypoint: 'sh'
+    args:
+      - '-c'
+      - |
+        cd terraform
+        terraform init
+        terraform apply -auto-approve -var="project_id=retail-1234" -var="image_tag=$COMMIT_SHA"
 
-# 5. Deploy Firebase Hosting (frontend)
-- name: 'gcr.io/firebase-ci/firebase-ci:latest'
-  entrypoint: 'bash'
-  env:
-    - 'FIREBASE_TOKEN'
-  args:
-  - '-c'
-  - |
-    cd frontend
-    firebase deploy --only hosting --token $FIREBASE_TOKEN
+  # 5. Deploy Firebase Hosting (frontend)
+  - name: 'gcr.io/firebase-ci/firebase-ci:latest'
+    entrypoint: 'bash'
+    env:
+      - 'FIREBASE_TOKEN'
+    args:
+      - '-c'
+      - |
+        cd frontend
+        firebase deploy --only hosting --token $FIREBASE_TOKEN
 
 timeout: 1200s
 
 images:
-- 'us-central1-docker.pkg.dev/retail-1234/retail-repo/products:$COMMIT_SHA'
-- 'us-central1-docker.pkg.dev/retail-1234/retail-repo/inventory:$COMMIT_SHA'
-- 'us-central1-docker.pkg.dev/retail-1234/retail-repo/orders:$COMMIT_SHA'
+  - 'us-central1-docker.pkg.dev/retail-1234/retail-repo/products:$COMMIT_SHA'
+  - 'us-central1-docker.pkg.dev/retail-1234/retail-repo/inventory:$COMMIT_SHA'
+  - 'us-central1-docker.pkg.dev/retail-1234/retail-repo/orders:$COMMIT_SHA'

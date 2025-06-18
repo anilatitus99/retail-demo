@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>ShopSphere Store</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    h1 { color: #2c3e50; }
+    .product, .inventory, .order { margin-bottom: 20px; }
+  </style>
+</head>
+<body>
+  <h1>ShopSphere Store</h1>
+
+  <h2>Products</h2>
+  <ul id="products"></ul>
+
+  <h2>Inventory</h2>
+  <ul id="inventory"></ul>
+
+  <h2>Orders</h2>
+  <ul id="orders"></ul>
+
+  <script>
+    const gatewayBaseUrl = "https://shopsphere-gateway-8ikr749o.uc.gateway.dev";
+
+    async function fetchAndDisplay(endpoint, elementId) {
+      const res = await fetch(`${gatewayBaseUrl}${endpoint}`);
+      const data = await res.json();
+
+      const container = document.getElementById(elementId);
+      container.innerHTML = "";
+
+      data.forEach(item => {
+        const li = document.createElement("li");
+        li.textContent = JSON.stringify(item);
+        container.appendChild(li);
+      });
+    }
+
+    fetchAndDisplay("/products", "products");
+    fetchAndDisplay("/inventory", "inventory");
+    fetchAndDisplay("/orders", "orders");
+  </script>
+</body>
+</html>

@@ -1,2 +1,13 @@
+# Ignore Terraform state files and sensitive info
+*.tfstate
+*.tfstate.backup
 .terraform/
-.terraform/
+# Ignore any local environment files
+.env
+# Ignore Python cache
+__pycache__/
+*.pyc
+# Ignore Docker image files (built locally)
+*.tar
+# Node modules or other large dependencies if applicable
+node_modules/

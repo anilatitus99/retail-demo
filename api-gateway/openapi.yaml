@@ -1,0 +1,41 @@
+swagger: "2.0"
+info:
+  title: ShopSphere API Gateway
+  description: Routes for products, inventory, and orders
+  version: "1.0.0"
+schemes:
+  - https
+paths:
+  /products:
+    get:
+      summary: Get products
+      operationId: getProducts
+      responses:
+        '200':
+          description: Successful response
+      x-google-backend:
+        address: https://products-667350400092.us-central1.run.app
+        path_translation: APPEND_PATH_TO_ADDRESS
+  /inventory:
+    get:
+      summary: Get inventory
+      operationId: getInventory
+      responses:
+        '200':
+          description: Successful response
+      x-google-backend:
+        address: https://inventory-667350400092.us-central1.run.app
+        path_translation: APPEND_PATH_TO_ADDRESS
+  /orders:
+    get:
+      summary: Get orders
+      operationId: getOrders
+      responses:
+        '200':
+          description: Successful response
+      x-google-backend:
+        address: https://orders-667350400092.us-central1.run.app
+        path_translation: APPEND_PATH_TO_ADDRESS
+x-google-endpoints:
+  - name: shopsphere-api
+    allowCors: true

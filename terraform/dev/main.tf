@@ -1,5 +1,5 @@
 provider "google" {
-  project = "retail-1234"  # change to your project ID
+  project = "retail-1234"  
   region  = "us-central1"
 }
 
@@ -34,4 +34,54 @@ resource "google_cloud_run_service_iam_member" "invoker" {
   service         = google_cloud_run_service.products.name
   role            = "roles/run.invoker"
   member          = "allUsers"
+}
+
+resource "google_cloud_run_service" "inventory" {
+  name     = "inventory"
+  location = "us-central1"
+
+  template {
+    spec {
+      containers {
+        image = "us-central1-docker.pkg.dev/retail-1234/retail-repo/inventory:latest"
+      }
+    }
+  }
+
+  traffic {
+    percent         = 100
+    latest_revision = true
+  }
+}
+
+resource "google_cloud_run_service_iam_member" "inventory_invoker" {
+  location = google_cloud_run_service.inventory.location
+  service  = google_cloud_run_service.inventory.name
+  role     = "roles/run.invoker"
+  member   = "allUsers"
+}
+
+resource "google_cloud_run_service" "orders" {
+  name     = "orders"
+  location = "us-central1"
+
+  template {
+    spec {
+      containers {
+        image = "us-central1-docker.pkg.dev/retail-1234/retail-repo/orders:dev"
+      }
+    }
+  }
+
+  traffic {
+    percent         = 100
+    latest_revision = true
+  }
+}
+
+resource "google_cloud_run_service_iam_member" "orders_invoker" {
+  location = google_cloud_run_service.orders.location
+  service  = google_cloud_run_service.orders.name
+  role     = "roles/run.invoker"
+  member   = "allUsers"
 }

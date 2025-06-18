@@ -37,6 +37,8 @@ steps:
 # 5. Deploy Firebase Hosting (frontend)
 - name: 'gcr.io/firebase-ci/firebase-ci:latest'
   entrypoint: 'bash'
+  env:
+    - 'FIREBASE_TOKEN'
   args:
   - '-c'
   - |

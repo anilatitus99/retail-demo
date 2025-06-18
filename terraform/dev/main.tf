@@ -68,7 +68,7 @@ resource "google_cloud_run_service" "orders" {
   template {
     spec {
       containers {
-        image = "us-central1-docker.pkg.dev/retail-1234/retail-repo/orders:dev"
+        image = "us-central1-docker.pkg.dev/retail-1234/retail-repo/orders:latest"
       }
     }
   }
